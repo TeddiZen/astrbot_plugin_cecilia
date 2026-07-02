@@ -136,7 +136,6 @@ class MyPlugin(Star):
             f"• 启动时间: {boot_time.strftime('%Y-%m-%d %H:%M:%S')}",
             "",
             "💻 【CPU 状态】",
-            f"• CPU型号: {platform.processor()}",
             f"• CPU核心数: {len(cpu_percent)}核",
             f"• 当前使用率: {cpu_avg:.1f}%",
             f"• 1分钟负载: {load_avg[0]:.2f}",
