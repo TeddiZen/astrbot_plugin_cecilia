@@ -173,54 +173,5 @@ class MyPlugin(Star):
         
         yield event.plain_result('\n'.join(lines))
     
-
-    @filter.command("port")
-    async def port_check(self, event: AstrMessageEvent, port: str = None):
-        """/port 端口号 查询占用端口的进程"""
-        logger.info(f"收到端口查询指令，端口：{port}")
-        if not port or not port.isdigit():
-            yield event.plain_result("❌ 用法错误，请输入：/port 数字端口\n示例：/port 6185")
-            return
-        
-        target_port = int(port)
-        if target_port < 1 or target_port > 65535:
-            yield event.plain_result("❌ 端口范围必须是 1~65535")
-            return
-
-        conn_list = []
-        # 遍历所有网络连接
-        for conn in psutil.net_connections(kind="inet"):
-            if conn.laddr.port == target_port:
-                pid = conn.pid
-                proc_name = "未知进程"
-                if pid:
-                    try:
-                        proc = psutil.Process(pid)
-                        proc_name = proc.name()
-                    except (psutil.NoSuchProcess, psutil.AccessDenied):
-                        proc_name = "进程已结束/无权限读取"
-                conn_list.append({
-                    "pid": pid,
-                    "proc_name": proc_name,
-                    "ip": conn.laddr.ip,
-                    "status": conn.status
-                })
-        
-        if not conn_list:
-            msg = f"🔍 端口 {target_port} 暂无程序占用"
-        else:
-            lines = [
-                f"🔍 端口 {target_port} 占用详情",
-                "=" * 35,
-                f"{'PID':<8}{'进程名':<20}{'本地IP':<15}{'状态'}"
-            ]
-            for item in conn_list:
-                lines.append(
-                    f"{str(item['pid']):<8}{item['proc_name'][:18]:<20}{item['ip']:<15}{item['status']}"
-                )
-            msg = "\n".join(lines)
-        
-        yield event.plain_result(msg)
-        
     async def terminate(self):
         """可选择实现异步的插件销毁方法，当插件被卸载/停用时会调用。"""
