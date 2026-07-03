@@ -84,11 +84,11 @@ class MyPlugin(Star):
                 choice2 = options[1].strip()
                 if choice1 and choice2:
                     result = random.choice([choice1, choice2])
-                    yield event.plain_result(f"塞西莉亚建议选择：{result} 哦！")
+                    yield event.plain_result(f"塞西莉亚建议选择：{result}哦！")
                     return
         
         # 格式错误，提示用户正确用法
-        yield event.plain_result("❌ 格式错误！请使用：!选选项一还是选项二\n例如：!选苹果还是橘子")
+        yield event.plain_result("❌ 格式错误！请使用：!选 选项一还是选项二\n例如：!选 苹果还是橘子")
 
     @filter.command("top")
     async def top(self, event: AstrMessageEvent):
