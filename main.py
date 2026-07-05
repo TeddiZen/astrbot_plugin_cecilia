@@ -109,7 +109,7 @@ class MyPlugin(Star):
         uptime = datetime.datetime.now() - boot_time
         uptime_str = str(uptime).split('.')[0]
         
-        from utils.top_processes import get_processes
+        from .utils.top_processes import get_processes
         processes = get_processes()
         top_processes = processes[:8]
 
