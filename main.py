@@ -37,7 +37,7 @@ class MyPlugin(Star):
         logger.info("接收到help请求")
         yield event.image_result("https://teddizen-java-tesy.oss-cn-guangzhou.aliyuncs.com/help.png")
 
-    @filter.command("随机数")
+    @filter.regex(r"!随机数\s*(\d+)?(到\d+)?")
     async def random_number(self, event: AstrMessageEvent):
         """随机数命令，格式：！随机数 1到10"""
         message_str = event.message_str.strip()
@@ -73,7 +73,7 @@ class MyPlugin(Star):
         else:
             yield event.plain_result("❌ 格式错误！请使用：!随机数 数字到数字\n例如：!随机数 1到10")
 
-    @filter.command("选")
+    @filter.regex(r"!选\s*(\S+)(?:\s+还是\s+(\S+))")
     async def choose(self, event: AstrMessageEvent):
         """随机选择命令，格式：!选选项一还是选项二"""
         message_str = event.message_str.strip()
