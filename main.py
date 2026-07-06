@@ -37,61 +37,49 @@ class MyPlugin(Star):
         logger.info("接收到help请求")
         yield event.image_result("https://teddizen-java-tesy.oss-cn-guangzhou.aliyuncs.com/help.png")
 
-    @filter.regex(r"随机数\s*(\d+)?(到\d+)?")
-    async def random_number(self, event: AstrMessageEvent):
-        """随机数命令，格式：！随机数 1到10"""
-        message_str = event.message_str.strip()
-        
-        # 解析命令内容（去掉"随机数 "部分）
-        content = message_str[3:].strip()  # "随机数" 是3个字符
+    @filter.regex(r"随机数\s*(?:(\d+)\s*到\s*(\d+))?")
+    async def random_number(self, event: AstrMessageEvent, start: int = None, end: int = None):
+        """随机数命令，格式：随机数 1到10"""
 
         # 如果没有指定数字范围，默认生成0到100之间的随机数
-        if content == "":
+        if start is None and end is None:
             result = random.randint(0, 100)
             yield event.plain_result(f"塞西莉亚听到了…从遥远的神明那里传来的声音，那个数字是…{result}！")
             return
         
         # 查找"到"字来分隔两个数字
-        elif "到" in content:
-            parts = content.split("到")
-            if len(parts) >= 2:
-                try:
-                    start = int(parts[0].strip())
-                    end = int(parts[1].strip())
-                    
-                    if start <= end:
-                        result = random.randint(start, end)
-                        yield event.plain_result(f"塞西莉亚听到了…从遥远的神明那里传来的声音，那个数字是…{result}！")
-                        return
-                    else:
-                        yield event.plain_result("❌ 格式错误！起始数字不能大于结束数字")
-                        return
-                except ValueError:
-                    pass
-        
+        elif start and end:
+            try:
+                start = int(start)
+                end = int(end)
+                
+                if start <= end:
+                    result = random.randint(start, end)
+                    yield event.plain_result(f"塞西莉亚听到了…从遥远的神明那里传来的声音，那个数字是…{result}！")
+                    return
+                else:
+                    yield event.plain_result("❌ 格式错误！起始数字不能大于结束数字")
+                    return
+            except ValueError:
+                pass
+    
         # 格式错误，提示用户正确用法
         else:
-            yield event.plain_result("❌ 格式错误！请使用：!随机数 数字到数字\n例如：!随机数 1到10")
+            yield event.plain_result("❌ 格式错误！请使用：随机数数字到数字\n例如：随机数1到10")
 
-    @filter.regex(r"选\s*(\S+?)(?:\s*还是\s*(\S+))")
-    async def choose(self, event: AstrMessageEvent):
-        """随机选择命令，格式：!选选项一还是选项二"""
-        message_str = event.message_str.strip()
-        
-        # 解析 "还是" 分隔的两个选项（去掉命令名"选"后）
-        content = message_str[1:] if message_str.startswith("选") else message_str
-        if "还是" in content:
-            options = content.split("还是")
-            if len(options) >= 2:
-                choice1 = options[0].strip()
-                choice2 = options[1].strip()
-                if choice1 and choice2:
-                    result = random.choice([choice1, choice2])
-                    yield event.plain_result(f"塞西莉亚建议选择：{result}哦！")
-                    return
+    @filter.regex(r"选\s*(\S+?)(?:\s*还是\s*(\S+?))")
+    async def choose(self, event: AstrMessageEvent, opt1: str = None, opt2: str = None):
+        """随机选择命令，格式：选选项一还是选项二"""
+        if opt1 and opt2:
+            try:
+                result = random.choice([opt1, opt2])
+                yield event.plain_result(f"塞西莉亚建议选择：{result}哦！")
+                return
+            except ValueError:
+                pass
         
         # 格式错误，提示用户正确用法
-        yield event.plain_result("❌ 格式错误！请使用：!选 选项一还是选项二\n例如：!选 苹果还是橘子")
+        yield event.plain_result("❌ 格式错误！请使用：选选项一还是选项二\n例如：选 苹果还是橘子")
 
     @filter.command("top")
     async def top(self, event: AstrMessageEvent):
