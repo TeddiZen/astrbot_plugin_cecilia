@@ -38,7 +38,7 @@ class MyPlugin(Star):
         yield event.image_result("https://teddizen-java-tesy.oss-cn-guangzhou.aliyuncs.com/help.png")
 
     @filter.regex(r"^随机数\s*(?:(\d+)\s*到\s*(\d+))?$")
-    async def rand_num(self, event, start, end):
+    async def rand_num(self, event, start: str = None, end: str = None):
         """随机数命令，格式：随机数[数字]到[数字]"""
         # 1. 给空参数赋默认区间 0~100
         if start is None and end is None:
