@@ -73,7 +73,7 @@ class MyPlugin(Star):
         else:
             yield event.plain_result("❌ 格式错误！请使用：!随机数 数字到数字\n例如：!随机数 1到10")
 
-    @filter.regex(r"选\s*(\S+)(?:\s+还是\s+(\S+))")
+    @filter.regex(r"选\s*(\S+?)(?:\s*还是\s*(\S+))")
     async def choose(self, event: AstrMessageEvent):
         """随机选择命令，格式：!选选项一还是选项二"""
         message_str = event.message_str.strip()
