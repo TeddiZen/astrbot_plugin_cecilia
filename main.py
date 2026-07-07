@@ -59,7 +59,7 @@ class MyPlugin(Star):
         res = random.randint(s, e)
         yield event.plain_result(f"塞西莉亚听到了…从遥远的神明那里传来的声音，那个数字是…{res}！")
 
-    @filter.regex(r"^选\s*(\S+)(?:\s*还是\s*(\S+))$")
+    @filter.regex(r"^选\s*(\S+)\s*还是\s*(\S+)$")
     async def choose(self, event: AstrMessageEvent, opt1: str = None, opt2: str = None):
         """随机选择命令，格式：选[选项一]还是[选项二]"""
         if opt1 and opt2:
