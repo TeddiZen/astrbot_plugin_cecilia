@@ -61,21 +61,26 @@ class MyPlugin(Star):
         res = random.randint(s, e)
         yield event.plain_result(f"塞西莉亚听到了…从遥远的神明那里传来的声音，那个数字是…{res}！")
 
-    @filter.regex(r"^选\s*(\S+)\s*还是\s*(\S+)$")
+    @filter.regex(r"^选.*还是.*$")
     async def choose(self, event: AstrMessageEvent):
-        """随机选择命令，格式：选[选项一]还是[选项二]"""
-        [opt1, opt2] = event.match.groups()
+        """随机选择命令，格式：选选项一还是选项二"""
+        text = event.message_str.strip()
+        # 移除开头的“选”字
+        content = text.removeprefix("选").strip()
+        # 用还是分割两段
+        parts = content.split("还是")
+
+        opt1 = parts[0].strip()
+        opt2 = parts[1].strip()
         logger.info(f"接收到choose请求，选项一：{opt1}，选项二：{opt2}")
-        if opt1 and opt2:
-            try:
-                result = random.choice([opt1, opt2])
-                yield event.plain_result(f"塞西莉亚建议选择：{result}哦！")
-                return
-            except ValueError:
-                pass
         
-        # 格式错误，提示用户正确用法
-        yield event.plain_result("❌ 格式错误！请使用：选选项一还是选项二\n例如：选 苹果还是橘子")
+        # 校验选项是否为空
+        if not opt1 or not opt2:
+            yield event.plain_result("❌ 格式错误！请使用：选选项一还是选项二\n例如：选苹果还是橘子")
+            return
+
+        result = random.choice([opt1, opt2])
+        yield event.plain_result(f"塞西莉亚建议选择：{result}哦！")
 
     @filter.command("top")
     async def top(self, event: AstrMessageEvent):
