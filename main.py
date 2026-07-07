@@ -40,7 +40,7 @@ class MyPlugin(Star):
     @filter.regex(r"^随机数\s*(\d+)\s*到\s*(\d+)$")
     async def rand_num(self, event):
         """随机数命令，格式：随机数[数字]到[数字]"""
-        start, end = event.match_groups()
+        [start, end] = event.match.groups()
         logger.info(f"接收到rand_num请求，起始数字：{start}，结束数字：{end}")
         # 1. 给空参数赋默认区间 0~100
         if start is None and end is None:
@@ -64,7 +64,7 @@ class MyPlugin(Star):
     @filter.regex(r"^选\s*(\S+)\s*还是\s*(\S+)$")
     async def choose(self, event: AstrMessageEvent):
         """随机选择命令，格式：选[选项一]还是[选项二]"""
-        opt1, opt2 = event.match_groups()
+        [opt1, opt2] = event.match.groups()
         logger.info(f"接收到choose请求，选项一：{opt1}，选项二：{opt2}")
         if opt1 and opt2:
             try:
