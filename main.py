@@ -10,10 +10,15 @@ import random
 import asyncio
 import platform
 
+# ========= 常量 ==========
+VERSION = "2.2.0" # 插件版本
+RUN_INFO_LINES = 8 # 打印的运行信息列表行数，超过部分省略号
+
+
 @register("astrbot_plugin_Cecilia", 
           "Teddizen", 
           "塞西莉亚bot自写插件", 
-          "2.1.1")
+          VERSION)  
 class MyPlugin(Star):
     def __init__(self, context: Context):
         super().__init__(context)
@@ -108,7 +113,7 @@ class MyPlugin(Star):
         
         from .utils.top_processes import get_processes
         processes = get_processes()
-        top_processes = processes[:8]
+        top_processes = processes[:RUN_INFO_LINES]
 
         # ========== 专业版输出 ==========
         lines = [
@@ -153,7 +158,7 @@ class MyPlugin(Star):
         lines.extend([
             "-" * 25,
             "📌 Made by 哲迪君",
-            f"🚀 Version: 2.1.1"
+            f"🚀 Version: {VERSION}"
         ])
         
         yield event.plain_result('\n'.join(lines))
