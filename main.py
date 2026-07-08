@@ -37,24 +37,32 @@ class MyPlugin(Star):
         logger.info("接收到help请求")
         yield event.image_result("https://teddizen-java-tesy.oss-cn-guangzhou.aliyuncs.com/help.png")
 
-    @filter.regex(r"^随机数\s*(\d+)\s*到\s*(\d+)$")
-    async def rand_num(self, event):
+    @filter.regex(r"^随机数.*到.*$")
+    async def rand_num(self, event: AstrMessageEvent):
         """随机数命令，格式：随机数[数字]到[数字]"""
-        [start, end] = event.match.groups()
+        text = event.message_str.strip()
+        # 移除开头的“随机数”字
+        content = text.removeprefix("随机数").strip()
+        # 用到分割两段
+        parts = content.split("到")
+
+        start = parts[0].strip()
+        end = parts[1].strip()
         logger.info(f"接收到rand_num请求，起始数字：{start}，结束数字：{end}")
         # 1. 给空参数赋默认区间 0~100
-        if start is None and end is None:
-            s, e = 0, 100
+        if not start or not end:
+            yield event.plain_result("❌ 格式错误！请使用：随机数[数字]到[数字]\n例如：随机数1到10")
+            return
         else:
             try:
                 s = int(start)
                 e = int(end)
             except (ValueError, TypeError):
-                yield event.plain_result("❌ 格式错误！请使用：随机数[数字]到[数字]\n例如：随机数1到10")
+                yield event.plain_result("❌ 输入数据类型错误！请使用：随机数[数字]到[数字]\n例如：随机数1到10")
                 return
             # 校验大小
             if s > e:
-                yield event.plain_result("❌ 格式错误！起始数字不能大于结束数字")
+                yield event.plain_result("❌ 数据大小错误！起始数字不能大于结束数字")
                 return
         
         # 生成随机数并回复
