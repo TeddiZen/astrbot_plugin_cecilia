@@ -162,6 +162,12 @@ class MyPlugin(Star):
         ])
         
         yield event.plain_result('\n'.join(lines))
+
+    @filter.regex(r"^！？.*！？$")
+    async def resive_message_gantan(self, event: AstrMessageEvent):
+        text = event.message_str.strip()
+        yield event.plain_result(text)
+        """接收消息"""
     
     async def terminate(self):
         """可选择实现异步的插件销毁方法，当插件被卸载/停用时会调用。"""
