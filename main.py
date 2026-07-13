@@ -42,6 +42,14 @@ class MyPlugin(Star):
         logger.info("接收到help请求")
         yield event.image_result("https://teddizen-java-tesy.oss-cn-guangzhou.aliyuncs.com/help.png")
 
+    @filter.command("投骰子")
+    async def roll_dice(self, event: AstrMessageEvent):
+        """投骰子命令"""
+        logger.info("接收到roll骰子请求")
+        # 生成随机数并回复
+        res = random.randint(1, 6)
+        yield event.plain_result(f"塞西莉亚投出了一个6面骰子，结果是：{res}")
+
     @filter.regex(r"^随机数.*到.*$")
     async def rand_num(self, event: AstrMessageEvent):
         """随机数命令，格式：随机数[数字]到[数字]"""
