@@ -42,6 +42,12 @@ class MyPlugin(Star):
         logger.info("接收到help请求")
         yield event.image_result("https://teddizen-java-tesy.oss-cn-guangzhou.aliyuncs.com/help.png")
 
+    @filter.regex(r"^.*司康饼.*$")
+    async def cookie(self, event: AstrMessageEvent):
+        """司康饼命令"""
+        logger.info("接收到司康饼请求（？")
+        yield event.plain_result("司康饼？！在哪里？！…啊，对不起，我太激动了。但是，但是！司康饼真的很好吃嘛…热乎乎的，外酥内软，配上红茶简直是天作之合…如果你有司康饼的话，能不能分我一小块？只要一小块就好！我可以帮你祈祷作为交换…")
+
     @filter.command("投骰子")
     async def roll_dice(self, event: AstrMessageEvent):
         """投骰子命令"""
