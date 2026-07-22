@@ -26,7 +26,7 @@ class MyPlugin(Star):
     async def initialize(self):
         """可选择实现异步的插件初始化方法，当实例化该插件类之后会自动调用该方法。"""
 
-    # 注册指令的装饰器。指令名为 helloworld。注册成功后，发送 `/helloworld` 就会触发这个指令，并回复 `你好, {user_name}!`
+    # 注册指令的装饰器。指令名为 helloworld。注册成功后，发送 `！helloworld` 就会触发这个指令，并回复 `你好, {user_name}!`
     @filter.command("helloworld")
     async def helloworld(self, event: AstrMessageEvent):
         """这是一个 hello world 指令""" # 这是 handler 的描述，将会被解析方便用户了解插件内容。建议填写。
@@ -47,6 +47,26 @@ class MyPlugin(Star):
         """司康饼命令"""
         logger.info("接收到司康饼请求（？")
         yield event.plain_result("司康饼？！在哪里？！…啊，对不起，我太激动了。但是，但是！司康饼真的很好吃嘛…热乎乎的，外酥内软，配上红茶简直是天作之合…如果你有司康饼的话，能不能分我一小块？只要一小块就好！我可以帮你祈祷作为交换…")
+    
+    @filter.event_message_type(filter.EventMessageType.ALL)
+    async def resive_message(self, event: AstrMessageEvent):
+        """处理特殊事件"""
+        raw = event.message_obj.raw_message
+        if not isinstance(raw, dict):
+            return
+        if raw.get("post_type") != "notice":
+            return
+
+        notice_type = raw.get("notice_type")
+        if notice_type == "group_increase":
+            group_id = str(raw["group_id"])
+            uid = raw["user_id"]
+            
+            logger.info(f"新成员 {uid} 进入群 {group_id}")
+            await event.send(
+                target_group_id=int(group_id),
+                message_chain=[{"type":"Plain","text":f"欢迎新人{uid}！\n可以发送指令：随机数、选A还是B"}]
+            )
 
     @filter.command("投骰子")
     async def roll_dice(self, event: AstrMessageEvent):
@@ -177,7 +197,7 @@ class MyPlugin(Star):
         
         yield event.plain_result('\n'.join(lines))
 
-    @filter.regex(r"^！？.*！？$")
+    @filter.regex(r"^！？.*？！$")
     async def resive_message_gantan(self, event: AstrMessageEvent):
         text = event.message_str.strip()
         yield event.plain_result(text)
