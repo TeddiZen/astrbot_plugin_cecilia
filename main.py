@@ -197,7 +197,7 @@ class MyPlugin(Star):
         
         yield event.plain_result('\n'.join(lines))
 
-    @filter.regex(r"^！？.*？！$")
+    @filter.regex(r"^！？.*？！$", priority=1)
     async def resive_message_gantan(self, event: AstrMessageEvent):
         text = event.message_str.strip()
         yield event.plain_result(text)
