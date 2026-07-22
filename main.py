@@ -59,12 +59,12 @@ class MyPlugin(Star):
 
         notice_type = raw.get("notice_type")
         if notice_type == "group_increase":
+            logger.info(raw)
             group_id = str(raw["group_id"])
             uid = raw["user_id"]
             
             logger.info(f"新成员 {uid} 进入群 {group_id}")
             await event.send(
-                target_group_id=int(group_id),
                 message_chain=[{"type":"Plain","text":f"欢迎新人{uid}！\n可以发送指令：随机数、选A还是B"}]
             )
 
