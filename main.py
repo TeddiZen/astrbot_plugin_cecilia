@@ -64,7 +64,14 @@ class MyPlugin(Star):
             uid = raw["user_id"]
             
             logger.info(f"新成员 {uid} 进入群 {group_id}")
-            event.send(f"欢迎新人{uid}！\n可以发送指令：随机数、选A还是B")
+            platform = event.get_platform()
+            await platform.send_message(
+                target_id=str(group_id),
+                target_type="group",
+                message_chain=[
+                    {"type": "Plain", "text": f"新成员 {uid} 进入群 {group_id}"}
+                ]
+            )
 
     @filter.command("投骰子")
     async def roll_dice(self, event: AstrMessageEvent):
