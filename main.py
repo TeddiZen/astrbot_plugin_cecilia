@@ -64,14 +64,12 @@ class MyPlugin(Star):
             uid = raw["user_id"]
             
             logger.info(f"新成员 {uid} 进入群 {group_id}")
-            platform = event.get_platform()
-            await platform.send_message(
-                target_id=str(group_id),
-                target_type="group",
-                message_chain=[
-                    {"type": "Plain", "text": f"新成员 {uid} 进入群 {group_id}"}
-                ]
-            )
+            origin = f"onebot:group_{target_gid}"
+            chain = [
+                Comp.At(qq=join_qq),
+                Comp.Plain(f" 欢迎新成员 {uid} 进入群 {group_id}")
+            ]
+            await self.context.send_message(origin, chain)
 
     @filter.command("投骰子")
     async def roll_dice(self, event: AstrMessageEvent):
