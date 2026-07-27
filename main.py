@@ -64,9 +64,9 @@ class MyPlugin(Star):
             uid = raw["user_id"]
             
             logger.info(f"新成员 {uid} 进入群 {group_id}")
-            origin = f"onebot:group_{target_gid}"
+            origin = f"onebot:group_{group_id}"
             chain = [
-                Comp.At(qq=join_qq),
+                Comp.At(qq=uid),
                 Comp.Plain(f" 欢迎新成员 {uid} 进入群 {group_id}")
             ]
             await self.context.send_message(origin, chain)
