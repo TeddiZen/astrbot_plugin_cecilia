@@ -66,13 +66,19 @@ class MyPlugin(Star):
                 Comp.At(qq=uid),
                 Comp.Plain(f" 欢迎新成员 {uid} 进入群 {group_id}")
             ]
+
             from astrbot.core.platform.message_session import MessageType
 
+            # HACK: 处理平台标识的log记录
             # 在入群事件处理中
             logger.info(f"event.session_id: {event.session_id}")
             logger.info(f"All MessageType values: {[e.value for e in MessageType]}")
-            # 使用事件自带的 session_id 发送消息
-            await self.context.send_message(event.session_id, chain)
+
+            # 获取平台标识（通常为 'onebot'，但建议从 event 获取）
+            platform = getattr(event, 'platform', 'onebot')  # 若 event 无 platform 属性则默认 onebot
+            # 正确构造 session 字符串
+            origin = f"{platform}:{MessageType.GroupMessage.value}:{group_id}"
+            await self.context.send_message(origin, chain)
 
     @filter.command("投骰子")
     async def roll_dice(self, event: AstrMessageEvent):
