@@ -51,7 +51,7 @@ class MyPlugin(Star):
     
     @filter.event_message_type(filter.EventMessageType.ALL)
     async def resive_message(self, event: AstrMessageEvent):
-        """处理特殊事件"""
+        """处理入群欢迎事件"""
         raw = event.message_obj.raw_message
         if not isinstance(raw, dict):
             return
@@ -60,17 +60,15 @@ class MyPlugin(Star):
 
         notice_type = raw.get("notice_type")
         if notice_type == "group_increase":
-            logger.info(raw)
-            group_id = str(raw["group_id"])
             uid = raw["user_id"]
-            
+            group_id = str(raw["group_id"])
             logger.info(f"新成员 {uid} 进入群 {group_id}")
-            origin = f"onebot:group:{group_id}"
             chain = [
                 Comp.At(qq=uid),
                 Comp.Plain(f" 欢迎新成员 {uid} 进入群 {group_id}")
             ]
-            await self.context.send_message(origin, chain)
+            # 直接向该群发送消息
+            await event.reply(chain)
 
     @filter.command("投骰子")
     async def roll_dice(self, event: AstrMessageEvent):
