@@ -66,6 +66,14 @@ class MyPlugin(Star):
                 Comp.At(qq=uid),
                 Comp.Plain(f" 欢迎新成员 {uid} 进入群 {group_id}")
             ]
+            from astrbot.core.platform.message_session import MessageType
+
+            # 在入群事件处理中
+            logger.info(f"event.session_id: {event.session_id}")
+            logger.info(f"event.platform_id: {event.platform_id}")
+            logger.info(f"event.message_type: {event.message_type}")  # 如果有的话
+            logger.info(f"event.__dict__: {event.__dict__}")
+            logger.info(f"All MessageType values: {[e.value for e in MessageType]}")
             # 使用事件自带的 session_id 发送消息
             await self.context.send_message(event.session_id, chain)
 
