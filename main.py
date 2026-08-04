@@ -51,7 +51,6 @@ class MyPlugin(Star):
     
     @filter.event_message_type(filter.EventMessageType.ALL)
     async def resive_message(self, event: AstrMessageEvent):
-        """处理入群欢迎事件"""
         raw = event.message_obj.raw_message
         if not isinstance(raw, dict):
             return
@@ -67,8 +66,8 @@ class MyPlugin(Star):
                 Comp.At(qq=uid),
                 Comp.Plain(f" 欢迎新成员 {uid} 进入群 {group_id}")
             ]
-            # 直接向该群发送消息
-            await event.reply(chain)
+            # 使用事件自带的 session_id 发送消息
+            await self.context.send_message(event.session_id, chain)
 
     @filter.command("投骰子")
     async def roll_dice(self, event: AstrMessageEvent):
