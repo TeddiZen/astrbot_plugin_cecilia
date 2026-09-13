@@ -10,6 +10,8 @@ import datetime
 import random
 import asyncio
 import platform
+import requests
+import json
 
 # ========= 常量 ==========
 VERSION = "2.2.0" # 插件版本
@@ -65,16 +67,20 @@ class MyPlugin(Star):
             uid = raw["user_id"]
             group_id = str(raw["group_id"])
             logger.info(f"新成员 {uid} 进入群 {group_id}")
-            chain = [
-                Comp.At(qq=uid),
-                Comp.Plain(f" 欢迎新成员 {uid} 进入群 {group_id}")
-            ]
 
-            # 获取平台，优先使用 event.platform（之前错误提示有 platform 属性）
-            platform = getattr(event, 'platform', 'onebot')
-            # 直接使用字符串 'GroupMessage'（这是有效的 MessageType 值）
-            origin = f"{platform}:GroupMessage:{group_id}"
-            await self.context.send_message(origin, chain)
+            url = "/send_msg"
+            payload = json.dumps({
+                "message_type": "group",
+                "group_id": group_id,
+                "message": f" 欢迎新成员 {uid} 进入群 {group_id}"
+            })
+            headers = {
+                'Content-Type': 'application/json'
+            }
+
+            response = requests.request("POST", url, headers=headers, data=payload)
+
+            logger.info(response.text)
 
     @filter.command("投骰子")
     async def roll_dice(self, event: AstrMessageEvent):
