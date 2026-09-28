@@ -74,7 +74,7 @@ class MyPlugin(Star):
             message_chain = MessageChain().message(f"欢迎新成员 {uid} 进入群 {group_id}")
             await self.context.send_message(event.unified_msg_origin, message_chain)
 
-            logger.info(umo, message_chain)
+            logger.info(f"{umo} {message_chain}")
 
 
     @filter.command("投骰子")
