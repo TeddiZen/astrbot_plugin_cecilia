@@ -1,6 +1,8 @@
 from astrbot.api.event import filter, AstrMessageEvent, MessageEventResult
 from astrbot.api.star import Context, Star, register
 from astrbot.api import logger
+from astrbot.api.message_components import MessageChain, Image
+
 import astrbot.api.message_components as Comp
 import textwrap
 import psutil
@@ -12,6 +14,7 @@ import asyncio
 import platform
 import requests
 import json
+
 
 # ========= 常量 ==========
 VERSION = "2.2.0" # 插件版本
@@ -68,19 +71,12 @@ class MyPlugin(Star):
             group_id = str(raw["group_id"])
             logger.info(f"新成员 {uid} 进入群 {group_id}")
 
-            url = "/send_msg"
-            payload = json.dumps({
-                "message_type": "group",
-                "group_id": group_id,
-                "message": f" 欢迎新成员 {uid} 进入群 {group_id}"
-            })
-            headers = {
-                'Content-Type': 'application/json'
-            }
+            umo = event.unified_msg_origin
+            message_chain = MessageChain().message(f"欢迎新成员 {uid} 进入群 {group_id}")
+            await self.context.send_message(event.unified_msg_origin, message_chain)
 
-            response = requests.request("POST", url, headers=headers, data=payload)
+            logger.info(umo, message_chain)
 
-            logger.info(response.text)
 
     @filter.command("投骰子")
     async def roll_dice(self, event: AstrMessageEvent):
