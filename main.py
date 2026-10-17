@@ -71,7 +71,7 @@ class MyPlugin(Star):
             logger.info(f"新成员 {uid} 进入群 {group_id}")
 
             umo = event.unified_msg_origin
-            from static.context import welcomWorld
+            from .static.context import welcomWorld
             if (group_id == "809908870"):
                 message_chain = MessageChain(chain=[
                     Comp.Plain("欢迎你， "),
