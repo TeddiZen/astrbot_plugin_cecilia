@@ -55,7 +55,7 @@ class MyPlugin(Star):
     #     logger.info("接收到司康饼请求（？")
     #     yield event.plain_result("司康饼？！在哪里？！…啊，对不起，我太激动了。但是，但是！司康饼真的很好吃嘛…热乎乎的，外酥内软，配上红茶简直是天作之合…如果你有司康饼的话，能不能分我一小块？只要一小块就好！我可以帮你祈祷作为交换…")
 
-
+    # FIXME 使用了硬性编码处理，后续修复
     @filter.event_message_type(filter.EventMessageType.ALL)
     async def resive_message(self, event: AstrMessageEvent):
         raw = event.message_obj.raw_message
@@ -71,7 +71,6 @@ class MyPlugin(Star):
             logger.info(f"新成员 {uid} 进入群 {group_id}")
 
             umo = event.unified_msg_origin
-            from .static.context import welcomWorld
             if (group_id == "809908870"):
                 message_chain = MessageChain(chain=[
                     Comp.Plain("欢迎你， "),
@@ -82,7 +81,7 @@ class MyPlugin(Star):
             else:
                 message_chain = MessageChain(chain=[
                     Comp.At(qq=uid), 
-                    Comp.Plain(welcomWorld),
+                    Comp.Plain("欢迎你，新来的旅人。我是赛西莉亚…不太机灵，但很会听人说话。愿这里的一切，都对你温柔些。"),
                 ])
             await self.context.send_message(event.unified_msg_origin, message_chain)
 
