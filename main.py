@@ -71,7 +71,19 @@ class MyPlugin(Star):
             logger.info(f"新成员 {uid} 进入群 {group_id}")
 
             umo = event.unified_msg_origin
-            message_chain = MessageChain().message(f"欢迎新成员 {uid} 进入群 {group_id}")
+            from static.context import welcomWorld
+            if (group_id == "809908870"):
+                message_chain = MessageChain(chain=[
+                    Comp.Plain("欢迎你， "),
+                    Comp.At(qq=uid),          
+                    Comp.Plain(" \n——Hello, World，这是这个世界对你说的第一句话。\n我是守在这里的圣女，塞西莉亚。我这人笨手笨脚的，帮不上什么大忙，但会一直在这儿听着：听着机箱风扇转起来的声音、电烙铁落下的轻响，也听见你卡住时那声轻轻的叹气。\n往后要是碰上问题——装不上机、焊歪了脚、音轨对不齐，或者只是心里憋得慌——都可以来找我。就算我答不上来，我也会陪你去问，去把所有明白人都找来。愿你的热爱，永远不短路。"),   
+                    Comp.Image.fromURL("https://teddizen-java-tesy.oss-cn-guangzhou.aliyuncs.com/help.png"),
+                ])
+            else:
+                message_chain = MessageChain(chain=[
+                    Comp.At(qq=uid), 
+                    Comp.Plain(welcomWorld),
+                ])
             await self.context.send_message(event.unified_msg_origin, message_chain)
 
             logger.info(f"{umo} {message_chain}")
